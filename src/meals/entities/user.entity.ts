@@ -1,6 +1,6 @@
 export class User {
     constructor(
-        _id: number,
+        _id: string,
         _name: string,
         _role: UserRoleEnum
     ) {
@@ -8,7 +8,7 @@ export class User {
         this.name = _name;
         this.role = _role;
     }
-    id: number;
+    id: string;
     name: string;
     role: UserRoleEnum;
 }

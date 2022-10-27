@@ -1,4 +1,4 @@
 export class CreateRatingDto {
-    userId: number;
+    userId: string;
     rating: number;
 }
