@@ -1,18 +1,18 @@
 export class Meal {
     constructor(
         _id: number,
-        _chef_name: string,
+        _chefName: string,
         _name: string,
         _rate: number)
     {
         this.id = _id;
-        this.chef_name = _chef_name;
+        this.chefName = _chefName;
         this.name = _name;
         this.rate = _rate;
     }
-    
+
     id: number;
-    chef_name: string;
+    chefName: string;
     name: string;
     rate: number;
 }
