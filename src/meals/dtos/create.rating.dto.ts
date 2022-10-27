@@ -1,4 +1,4 @@
-export class CreateRateDto {
+export class CreateRatingDto {
     userId: number;
     rating: number;
 }

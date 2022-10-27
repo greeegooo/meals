@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { CreateRateDto } from './dtos/create.rate.dto';
+import { CreateRatingDto } from './dtos/create.rating.dto';
 import { CreateRateResponseDto } from './dtos/create.rate.response.dto';
 import { SearchQueryDto } from './dtos/search.query.dto';
-import { Meal } from './meal.entity';
+import { Meal } from './entities/meal.entity';
 import { MealsService } from './meals.service';
+import { Rating } from './entities/rating.entity';
 
 @Controller('meals')
 export class MealsController {
@@ -17,8 +18,8 @@ export class MealsController {
   @Post(':id/ratings')
   rate(
     @Param('id') mealId: number,
-    @Body() createRateDto: CreateRateDto): CreateRateResponseDto {
+    @Body() createRatingDto: CreateRatingDto): Rating[] {
   
-    return this.mealsService.rate(mealId, createRateDto);
+    return this.mealsService.rate(mealId, createRatingDto);
   }
 }
