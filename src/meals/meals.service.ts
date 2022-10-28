@@ -91,7 +91,7 @@ export class MealsService {
     if(coincidence) throw new Error('You already submited a rating for this meal.');
   }
 
-  private mapToDto(entity: Meal): MealDto {
+  mapToDto(entity: Meal): MealDto {
     let dto = new MealDto();
     dto.meal = entity.name;
     dto.chefName = entity.chef.name
