@@ -1,15 +1,14 @@
 import { RatingDto } from "../dtos/rating.dto";
+import { Rating } from "../entities/rating.entity";
 
 export class RatingsFactory {
     static getDtoInstance(
-        meal: string,
-        user: string,
-        value: number
+        entity: Rating
     ) {
         let dto = new RatingDto();
-        dto.meal = meal;
-        dto.user = user;
-        dto.value = value;
+        dto.meal = entity.meal.name;
+        dto.user = entity.user.name;
+        dto.value = entity.value;
         return dto;
     }
 }

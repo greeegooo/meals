@@ -1,41 +1,50 @@
 import { Injectable } from "@nestjs/common";
-import { usersRepo } from "src/test.repositories";
 import { SignUpDto } from "./dtos/sign.up.dto";
-import { User, UserRoleEnum } from "./entities/user.entity";
-import { v4 as uuidv4 } from 'uuid';
+import { User } from "./entities/user.entity";
 import { UserDto } from "./dtos/user.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { SignInDto } from "./dtos/sign.in.dto";
 
 @Injectable()
 export class AuthService {
-    constructor() {
-        usersRepo.push(new User(uuidv4(), 'GregCustomer', '1', UserRoleEnum.CUSTOMER));
-        usersRepo.push(new User(uuidv4(), 'GregChef', '1', UserRoleEnum.CHEF));
-        usersRepo.push(new User(uuidv4(), 'John', '1', UserRoleEnum.CHEF));
-        usersRepo.push(new User(uuidv4(), 'Tom', '1', UserRoleEnum.CHEF));
+    constructor(
+        @InjectRepository(User)
+        private readonly usersRepository: Repository<User>
+    ) {}
 
-        console.log(usersRepo);
+    async signUp(signUpDto: SignUpDto): Promise<UserDto> {
+        console.log(signUpDto);
+        let user = new User();
+        user.name = signUpDto.user;
+        user.pass = signUpDto.pass;
+        user.role = signUpDto.role;
+
+        let ety = this.usersRepository.create(user);
+        ety = await this.usersRepository.save(ety);
+        return this.mapToDto(ety);
     }
 
-    signUp(signUpDto: SignUpDto): UserDto {
-        let user = new User(
-            uuidv4(),
-            signUpDto.user,
-            signUpDto.pass,
-            signUpDto.role
-        );
-
-        usersRepo.push(user);
-        console.log(usersRepo);
-        return this.getBy(user.id);
+    async signIn(signInDto: SignInDto): Promise<UserDto> {
+        let ety = await this.getBy(signInDto.user);
+        if(ety.pass !== signInDto.pass) 
+            throw new Error('User or Pass has inconvenient.');
+        let dto = this.mapToDto(ety);
+        dto.token = 'TOKEN';
+        return dto;
     }
 
-    private getBy(id: string): UserDto {
-        let ety = usersRepo.find(user => user.id === id);
-        if (!ety) throw new Error('User not found.');
+    private async getBy(name: string): Promise<User> {
+        let entity = await this.usersRepository.findOne({where: { name }});
+        if (!entity) throw new Error('User not found.');
+        
+        return entity;
+    }
+
+    private mapToDto(entity: User): UserDto {
         let dto = new UserDto();
-        dto.name = ety.name;
-        dto.role = ety.role;
-
+        dto.name = entity.name;
+        dto.role = entity.role;
         return dto;
     }
 }

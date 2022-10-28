@@ -14,19 +14,19 @@ export class MealsController {
   constructor(private readonly mealsService: MealsService) {}
 
   @Get()
-  search(@Query() query: SearchQueryDto): MealDto[] {
-    return this.mealsService.search(query);
+  async search(@Query() query: SearchQueryDto): Promise<MealDto[]> {
+    return await this.mealsService.search(query);
   }
 
   @Post()
-  create(@Body() createMealDto: CreateMealDto): MealDto {
-    return this.mealsService.create(createMealDto);
+  async create(@Body() createMealDto: CreateMealDto): Promise<MealDto> {
+    return await this.mealsService.create(createMealDto);
   }
 
   @Post(':id/ratings')
   rate(
     @Param('id') mealId: string,
-    @Body() createRatingDto: CreateRatingDto): RatingDto {
+    @Body() createRatingDto: CreateRatingDto): Promise<RatingDto> {
   
     return this.mealsService.rate(mealId, createRatingDto);
   }

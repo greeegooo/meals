@@ -1,15 +1,18 @@
+import { User } from "src/auth/entities/user.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Meal } from "./meal.entity";
+
+@Entity({ name: 'ratings' })
 export class Rating {
-    constructor(
-        _mealId: string,
-        _userId: string,
-        _value: number
-    ) {
-        this.mealId = _mealId;
-        this.userId = _userId;
-        this.value = _value;
-    }
+    @PrimaryGeneratedColumn('uuid')
     id: string;
-    mealId: string;
-    userId: string;
+
+    @ManyToOne(() => Meal)
+    meal: Meal;
+
+    @ManyToOne(() => User)
+    user: User;
+
+    @Column()
     value: number;
 }

@@ -1,15 +1,18 @@
-export class Meal {
-    constructor(
-        _id: string,
-        _chefId: string,
-        _name: string)
-    {
-        this.id = _id;
-        this.chefId = _chefId;
-        this.name = _name;
-    }
+import { User } from "src/auth/entities/user.entity";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity({ name: 'meals' })
+export class Meal {
+    @PrimaryGeneratedColumn("uuid")
     id: string;
-    chefId: string;
+
+    @OneToOne(() => User, { eager: true })
+    @JoinColumn()
+    chef: User;
+
+    @Column()
     name: string;
+
+    @Column()
+    rating: number;
 }
