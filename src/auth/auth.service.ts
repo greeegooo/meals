@@ -52,7 +52,7 @@ export class AuthService {
         return entity;
     }
 
-    private mapToDto(entity: User): UserDto {
+    mapToDto(entity: User): UserDto {
         let dto = new UserDto();
         dto.name = entity.name;
         dto.role = entity.role;
