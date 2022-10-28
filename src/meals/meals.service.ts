@@ -36,9 +36,8 @@ export class MealsService {
     this.logger.log('Create. Start.');
     this.logger.log('Create. Validating.');
     let chef = await this.usersRepository.findOne({ where: { id: createMealDto.userId }});
-    console.log(chef);
     if(!chef) throw new NotFoundException('Chef not found');
-    if(chef.role === UserRoleEnum.CUSTOMER) throw new UnauthorizedException('Customers cant create meal');
+    if(chef.role.toUpperCase() === UserRoleEnum.CUSTOMER) throw new UnauthorizedException('Customers cant create meal');
 
     let meal = new Meal();
     meal.chef = chef;
@@ -101,7 +100,6 @@ export class MealsService {
         user: { id: createRatingDto.userId }
       },
     });
-    console.log(coincidence);
     if(coincidence) throw new BadRequestException('You already submited a rating for this meal.');
   }
 

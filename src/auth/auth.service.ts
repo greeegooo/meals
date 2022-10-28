@@ -17,7 +17,6 @@ export class AuthService {
 
     async signUp(signUpDto: SignUpDto): Promise<UserDto> {
         this.logger.log('SignUp. Start.');
-        console.log(signUpDto);
         let user = new User();
         user.name = signUpDto.user;
         user.pass = signUpDto.pass;
@@ -42,7 +41,7 @@ export class AuthService {
 
         this.logger.log('SignIn. Generating token.');
         dto.token = 'TOKEN';
-        
+
         return dto;
     }
 
