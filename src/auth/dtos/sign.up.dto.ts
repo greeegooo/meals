@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { UserRoleEnum } from "../entities/user.entity";
+import { UserRoleEnum } from "../entities/role.enum";
 
 export class SignUpDto {
     @ApiProperty({

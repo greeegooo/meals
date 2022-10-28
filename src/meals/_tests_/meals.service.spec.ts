@@ -1,15 +1,14 @@
-import { User, UserRoleEnum } from "../../auth/entities/user.entity";
+import { User } from "../../auth/entities/user.entity";
 import { Repository } from "typeorm";
 import { SearchQueryDto } from "../dtos/search.query.dto";
 import { Meal } from "../entities/meal.entity";
 import { Rating } from "../entities/rating.entity";
 import { MealsFactory } from "../factories/meals.factory";
 import { MealsService } from "../meals.service";
-import { MealDto } from "../dtos/meal.dto";
 import { CreateMealDto } from "../dtos/create.meal.dto";
-import e from "express";
 import { CreateRatingDto } from "../dtos/create.rating.dto";
 import { RatingsFactory } from "../factories/ratings.factory";
+import { UserRoleEnum } from "../../auth/entities/role.enum";
 
 describe('mealsService', () => {
     let subject: MealsService;

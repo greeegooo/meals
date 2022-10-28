@@ -34,10 +34,15 @@ export class AuthService {
     async signIn(signInDto: SignInDto): Promise<UserDto> {
         this.logger.log('SignIn. Start.');
         let ety = await this.getBy(signInDto.user);
+
+        this.logger.log('SignIn. Validating credentials.');
         if(ety.pass !== signInDto.pass) 
             throw new BadRequestException('User or Pass has inconvenient.');
         let dto = this.mapToDto(ety);
+
+        this.logger.log('SignIn. Generating token.');
         dto.token = 'TOKEN';
+        
         return dto;
     }
 

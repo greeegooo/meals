@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { UserRoleEnum } from "./role.enum";
 
 @Entity({ name: 'users' })
 export class User {
@@ -14,9 +15,4 @@ export class User {
 
     @Column()
     role: UserRoleEnum;
-}
-
-export enum UserRoleEnum {
-    CUSTOMER = 'Customer',
-    CHEF = 'Chef'
 }

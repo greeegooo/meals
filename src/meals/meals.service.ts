@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateRatingDto as CreateRatingDto } from './dtos/create.rating.dto';
 import { SearchQueryDto } from './dtos/search.query.dto';
 import { Meal } from './entities/meal.entity';
-import { User, UserRoleEnum } from '../auth/entities/user.entity';
+import { User } from '../auth/entities/user.entity';
 import { Rating } from './entities/rating.entity';
 import { CreateMealDto } from './dtos/create.meal.dto';
 import { MealDto } from './dtos/meal.dto';
@@ -10,9 +10,12 @@ import { RatingDto } from './dtos/rating.dto';
 import { RatingsFactory } from './factories/ratings.factory';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
+import { UserRoleEnum } from '../auth/entities/role.enum';
 
 @Injectable()
 export class MealsService {
+  private readonly logger = new Logger(MealsService.name);
+
   constructor(
     @InjectRepository(Meal) private readonly mealsRepository: Repository<Meal>,
     @InjectRepository(Rating) private readonly ratingsRepository: Repository<Rating>,
@@ -20,14 +23,18 @@ export class MealsService {
   ) {}
 
   async search(qry: SearchQueryDto): Promise<MealDto[]> {
+    this.logger.log('Search. Start');
     let result = await this.mealsRepository.find({
       where: { chef: { name: qry.chefName }}
     });
 
+    this.logger.log('Search. Success.');
     return result.map(this.mapToDto);
   }
 
   async create(createMealDto: CreateMealDto): Promise<MealDto> {
+    this.logger.log('Create. Start.');
+    this.logger.log('Create. Validating.');
     let chef = await this.usersRepository.findOne({ where: { id: createMealDto.userId }});
     console.log(chef);
     if(!chef) throw new NotFoundException('Chef not found');
@@ -38,21 +45,28 @@ export class MealsService {
     meal.name = createMealDto.name;
     meal.rating = 0;
 
+    this.logger.log('Create. Before Save.');
     let entity = this.mealsRepository.create(meal);
     entity = await this.mealsRepository.save(entity);
+    this.logger.log('Create. Save success.');
 
     return this.mapToDto(entity);
   }
 
   async rate(mealId: string, createRatingDto: CreateRatingDto): Promise<RatingDto> {
+    this.logger.log('Rate. Start.');
     await this.validateRate(mealId, createRatingDto);
 
     let rating = await this.createRating(mealId, createRatingDto);
 
+    this.logger.log('Rate. Before Save.');
     let entity = this.ratingsRepository.create(rating);
     entity = await this.ratingsRepository.save(entity);
+    this.logger.log('Rate. Save Success.');
 
+    this.logger.log('Rate. Updating meal average.');
     await this.updateMealRating(rating);
+    this.logger.log('Rate. Update average success.');
 
     return RatingsFactory.getDtoInstance(rating);
   }

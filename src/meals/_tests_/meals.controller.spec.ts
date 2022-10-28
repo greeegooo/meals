@@ -10,6 +10,7 @@ import { Rating } from "../entities/rating.entity";
 import { Meal } from "../entities/meal.entity";
 import { User } from "../../auth/entities/user.entity";
 import { RatingDto } from "../dtos/rating.dto";
+import { BadRequestException } from "@nestjs/common";
 
 describe('mealsController', () => {
     let subject: MealsController;
@@ -62,7 +63,9 @@ describe('mealsController', () => {
 
         //Skipped. Not throwing error correctly
         xit('should fail when customer wants to create', async () => {
-            jest.spyOn(mealsService, 'create').mockRejectedValue(new Error("Error") as never);
+            jest.spyOn(mealsService, 'create').mockRejectedValue(async () => { 
+                throw new BadRequestException("Error")
+            });
             
             let request = { name: 'newMeal', userId: '1' } as CreateMealDto;
             expect(await subject.create(request)).toThrowError();
