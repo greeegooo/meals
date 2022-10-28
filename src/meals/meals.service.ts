@@ -95,14 +95,14 @@ export class MealsService {
 
   private async validateRate(mealId: string, createRatingDto: CreateRatingDto) {
     let coincidence = await this.ratingsRepository.findOne({
-      where: {
-        meal: { id: mealId },
-        user: { id: createRatingDto.userId }
-      },
+      where: { meal: { id: mealId }, user: { id: createRatingDto.userId }},
     });
-    if(coincidence) throw new BadRequestException('You already submited a rating for this meal.');
+    if(coincidence) 
+      throw new BadRequestException('You already submited a rating for this meal.');
+    if(![1,2,3,4,5].includes(createRatingDto.rating)) 
+      throw new BadRequestException('Ratings must be between [1..5].');
   }
-
+  
   mapToDto(entity: Meal): MealDto {
     let dto = new MealDto();
     dto.meal = entity.name;
