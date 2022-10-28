@@ -7,21 +7,12 @@ import { Rating } from './entities/rating.entity';
 import { CreateMealDto } from './dtos/create.meal.dto';
 import { MealDto } from './dtos/meal.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { mealsRepo, ratingsRepo, usersRepo } from 'src/test.repositories';
+import { mealsRepo, ratingsRepo, usersRepo } from '../test.repositories';
+import { RatingDto } from './dtos/rating.dto';
+import { RatingsFactory } from './factories/ratings.factory';
 
 @Injectable()
 export class MealsService {
-  constructor() {
-    let john = usersRepo.find(u => u.name === 'John') as User;
-    let tom = usersRepo.find(u => u.name === 'Tom') as User;
-
-    mealsRepo.push(new Meal(uuidv4(), john.id, 'EggplantParmesan'));
-    mealsRepo.push(new Meal(uuidv4(), tom.id, 'NoodleSoup'));
-    mealsRepo.push(new Meal(uuidv4(), john.id, 'Milanesa'));
-    mealsRepo.push(new Meal(uuidv4(), john.id, 'ChickpeaSalad'));
-
-    console.log(mealsRepo);
-  }
   search(qry: SearchQueryDto): MealDto[] {
     let result = mealsRepo;
 
@@ -53,6 +44,7 @@ export class MealsService {
   }
 
   create(createMealDto: CreateMealDto): MealDto {
+    console.log(createMealDto);
     this.validateCreate(createMealDto);
 
     let meal = new Meal(
@@ -66,10 +58,7 @@ export class MealsService {
     return this.getBy(meal.id);
   }
 
-  rate(mealId: string, createRatingDto: CreateRatingDto): Rating[] {
-    console.log(mealId);
-    console.log(createRatingDto);
-
+  rate(mealId: string, createRatingDto: CreateRatingDto): RatingDto {
     this.validateRate(mealId, createRatingDto);
 
     let rating = new Rating(
@@ -80,7 +69,11 @@ export class MealsService {
 
     ratingsRepo.push(rating);
 
-    return ratingsRepo;
+    return RatingsFactory.getDtoInstance(
+      mealsRepo.find(m => m.id === rating.mealId)?.name as string,
+      usersRepo.find(u => u.id === rating.userId)?.name as string,
+      rating.value
+    );
   }
 
   private validateRate(mealId: string, createRatingDto: CreateRatingDto) {

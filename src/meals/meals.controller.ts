@@ -7,6 +7,7 @@ import { MealsService } from './meals.service';
 import { Rating } from './entities/rating.entity';
 import { MealDto } from './dtos/meal.dto';
 import { CreateMealDto } from './dtos/create.meal.dto';
+import { RatingDto } from './dtos/rating.dto';
 
 @Controller('meals')
 export class MealsController {
@@ -25,7 +26,7 @@ export class MealsController {
   @Post(':id/ratings')
   rate(
     @Param('id') mealId: string,
-    @Body() createRatingDto: CreateRatingDto): Rating[] {
+    @Body() createRatingDto: CreateRatingDto): RatingDto {
   
     return this.mealsService.rate(mealId, createRatingDto);
   }
