@@ -57,6 +57,18 @@ $ npm run test
 
 ```
 
+## Database Connection
+
+```bash
+# For simplicity purposes, it comes with a hardcoded Heroku MySql Server connection. You going to need to connect via MySQLWorkbench in order to fetch the neccesary _id
+$ hostname: us-cdbr-east-06.cleardb.net
+$ port: 3306
+$ user: badd5fd3f5d1ad
+$ pass: 0fb37062
+$ database: heroku_115b441f87b7a4c
+
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
