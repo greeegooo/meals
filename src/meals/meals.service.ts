@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateRatingDto as CreateRatingDto } from './dtos/create.rating.dto';
 import { SearchQueryDto } from './dtos/search.query.dto';
 import { Meal } from './entities/meal.entity';
@@ -9,7 +9,7 @@ import { MealDto } from './dtos/meal.dto';
 import { RatingDto } from './dtos/rating.dto';
 import { RatingsFactory } from './factories/ratings.factory';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 
 @Injectable()
 export class MealsService {
@@ -30,8 +30,8 @@ export class MealsService {
   async create(createMealDto: CreateMealDto): Promise<MealDto> {
     let chef = await this.usersRepository.findOne({ where: { id: createMealDto.userId }});
     console.log(chef);
-    if(!chef) throw new Error('Chef not found');
-    if(chef.role === UserRoleEnum.CUSTOMER) throw new Error('Customers cant create meal');
+    if(!chef) throw new NotFoundException('Chef not found');
+    if(chef.role === UserRoleEnum.CUSTOMER) throw new UnauthorizedException('Customers cant create meal');
 
     let meal = new Meal();
     meal.chef = chef;
@@ -60,10 +60,10 @@ export class MealsService {
   private async createRating(mealId: string, createRatingDto: CreateRatingDto): Promise<Rating> {
     let rating = new Rating();
     let meal = await this.mealsRepository.findOne({ where: { id: mealId }});
-    if(!meal) throw new Error('Meal not found');
+    if(!meal) throw new NotFoundException('Meal not found');
     rating.meal = meal;
     let user = await this.usersRepository.findOne({ where: { id: createRatingDto.userId }});
-    if(!user) throw new Error('User not found');
+    if(!user) throw new NotFoundException('User not found');
     rating.user = user;
     rating.value = createRatingDto.rating;
     return rating;
@@ -88,7 +88,7 @@ export class MealsService {
       },
     });
     console.log(coincidence);
-    if(coincidence) throw new Error('You already submited a rating for this meal.');
+    if(coincidence) throw new BadRequestException('You already submited a rating for this meal.');
   }
 
   mapToDto(entity: Meal): MealDto {

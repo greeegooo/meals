@@ -17,6 +17,6 @@ export class User {
 }
 
 export enum UserRoleEnum {
-    CUSTOMER,
-    CHEF
+    CUSTOMER = 'Customer',
+    CHEF = 'Chef'
 }
