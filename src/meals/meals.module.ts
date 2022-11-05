@@ -7,9 +7,7 @@ import { MealsController } from './meals.controller';
 import { MealsService } from './meals.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Meal, Rating, User])
-  ],
+  imports: [TypeOrmModule.forFeature([Meal, Rating, User])],
   controllers: [MealsController],
   providers: [MealsService],
 })

@@ -1,7 +1,11 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { MealsModule } from './meals/meals.module';
+import { GqlModule } from './gql/gql.module';
 
 @Module({
   imports: [
@@ -15,8 +19,15 @@ import { MealsModule } from './meals/meals.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      debug: true,
+      playground: true,
+    }),
+    GqlModule,
     AuthModule,
-    MealsModule
-  ]
+    MealsModule,
+  ],
 })
 export class AppModule {}
